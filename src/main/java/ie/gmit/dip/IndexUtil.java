@@ -1,6 +1,7 @@
 package ie.gmit.dip;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class IndexUtil {
 
@@ -32,49 +33,27 @@ public class IndexUtil {
         System.out.println(String.format("# Word Type: %s", wordDetail.getWordType()));
         System.out.println("# Definition: ");
         String[] split = wordDetail.getDefinition().split("\n");
-        for (String line : split){
-            print5WordsInLine(line);
+        for (String line : split) {
+            System.out.println(formatLine(line, 5));
         }
-        System.out.println(String.format("# Pages: ", wordDetail.getWord()));
+        System.out.print("# Pages: ");
+        for (int page : wordDetail.getPages()) {
+            System.out.print(page + " ");
 
-
+        }
     }
-//    public void print5WordsInLine(String line){
-//        String[] split = line.split(" ");
-//        if (split.length<=5){
-//            System.out.println(line);
-//        }else{
-//            for (int i = 0; i < split.length; i++){
-//                if (i % 5  == 0){
-//                    System.out.print("\n");
-//                }
-//                System.out.print(split[i] + " ");
-//            }
-//        }
-//    }
 
-    String splitString(String text, int wordsPerLine)
-    {
-        final StringBuilder newText = new StringBuilder();
-
-        final StringTokenizer wordTokenizer = new StringTokenizer(text);
-        long wordCount = 1;
-        while (wordTokenizer.hasMoreTokens())
-        {
-            newText.append(wordTokenizer.nextToken());
-            if (wordTokenizer.hasMoreTokens())
-            {
-                if (wordCount++ % wordsPerLine == 0)
-                {
-                    newText.append(LINEBREAK);
-                }
-                else
-                {
-                    newText.append(WHITESPACE);
-                }
+    private String formatLine(String text, int lineLength) {
+        final StringTokenizer split = new StringTokenizer(text);
+        long count = 1;
+        final StringBuilder formattedText = new StringBuilder();
+        while (split.hasMoreTokens()) {
+            formattedText.append(split.nextToken());
+            if (split.hasMoreTokens()) {
+                formattedText.append((count++ % lineLength == 0) ? System.getProperty("line.separator") : " ");
             }
         }
-        return newText.toString();
+        return formattedText.toString();
     }
 }
-}
+
