@@ -2,6 +2,9 @@ package ie.gmit.dip;
 
 import java.util.*;
 
+/**
+ * Operations that can be performed on index.
+ */
 public class IndexUtil {
 
     private Map<String, WordDetail> index;
@@ -10,95 +13,107 @@ public class IndexUtil {
         this.index = index;
     }
 
-    public static void main(String[] args) {
-        String sampleDef = "\"To cast or drive out; to banish; to expel; to reject.\"\n" +
-                "\"To give up absolutely; to forsake entirely ; to   renounce utterly; to relinquish all connection with or concern on; to   desert, as a person to whom one owes allegiance or fidelity; to quit;   to surrender.\"\n" +
-                "\"Reflexively: To give (one's self) up without attempt at   self-control; to yield (one's self) unrestrainedly; -- often in a bad   sense.\"\n" +
-                "\"To relinquish all claim to; -- used when an insured   person gives up to underwriters all claim to the property covered by a   policy, which may remain after loss or damage by a peril insured   against.\"\n" +
-                "\"Abandonment; relinquishment.\"\n" +
-                "\"A complete giving up to natural impulses; freedom from   artificial constraint; careless freedom or ease.\"";
-        String word = "ABANDON";
-        String type = ",v. t.";
-        ArrayList<Integer> pages = new ArrayList<>();
-        pages.add(45);
-        pages.add(80);
-        WordDetail wordDetail = new WordDetail();
-        wordDetail.setWord(word);
-        wordDetail.setDefinition(sampleDef);
-        wordDetail.setWordType(type);
-        wordDetail.setPages(pages);
-//        IndexUtil util = new IndexUtil();
-//        util.printIndexEntry(wordDetail);
+
+    /**
+     * print index with word details like type, definition and frequency ordered alphabetic.
+     */
+    public void printIndexSortedAscFull() {
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByName());
+        printWordList(list);
     }
 
-    public void printIndexSortedAsc() {
-// TODO implement
+    /**
+     * Print index to console. For each index entry only word name will Be displayed.
+     */
+    public void printIndexSortedAscNamesOnly() {
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByName());
+        printWordListJustNames(list);
     }
 
-    public void printIndexSortedDesc() {
-// TODO implement
-
+    /**
+     * print index with word details like type, definition and frequency in reversed alphabetic order.
+     */
+    public void printIndexSortedDescFull() {
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByName());
+        Collections.reverse(list);
+        printWordList(list);
     }
 
-    public void printWordList(List<WordDetail> topInfrequentWords) {
-        // TODO implement
-
+    /**
+     * print index with word names from index in reversed alphabetic order.
+     */
+    public void printIndexSortedDescNamesOnly() {
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByName());
+        Collections.reverse(list);
+        printWordListJustNames(list);
     }
 
-
-    class SortByFrequency implements Comparator<WordDetail> {
-
-        @Override
-        public int compare(WordDetail o1, WordDetail o2) {
-            int s1 = o1.getPages().size();
-            int s2 = o2.getPages().size();
-            return s1 - s2;
+    /**
+     * Print names of words from collection of WordDetails.
+     *
+     * @param list List of WordDetails
+     */
+    public void printWordListJustNames(List<WordDetail> list) {
+        StringBuffer line = new StringBuffer();
+        for (WordDetail wordDetail : list) {
+            line.append(wordDetail.getWord()).append(", ");
         }
+        System.out.println(formatLine(line.toString(), 5));
     }
 
-    class SortByName implements Comparator<WordDetail> {
-        @Override
-        public int compare(WordDetail o1, WordDetail o2) {
-            String name1 = o1.getWord();
-            String name2 = o2.getWord();
-            return name1.compareTo(name2);
+    /**
+     * Prints list of words with definition and number of occurrence to console
+     *
+     * @param wordDetails list of words to be printed
+     */
+    public void printWordList(List<WordDetail> wordDetails) {
+        for (WordDetail wordDetail : wordDetails) {
+            printIndexEntry(wordDetail);
         }
-    }
 
+    }
 
     /**
      * Get total number of unique words in index.
+     *
      * @return The total number of unique words.
      */
-    public int getUniqueWordsCount(){
+    public int getUniqueWordsCount() {
         return index.size();
     }
 
     /**
      * Get list of most frequent words
+     *
      * @param n number of elements to return
-     * @return {@paramref n} most frequent elements of index
+     * @return most frequent elements of index
      */
-    public List<WordDetail> getTopFrequentWords(int n){
+    public List<WordDetail> getTopFrequentWords(int n) {
         List<WordDetail> list = new ArrayList<WordDetail>(index.values());
         Collections.sort(list, new SortByFrequency());
         Collections.reverse(list);
-        return list.subList(0,n);
+        return list.subList(0, n);
     }
 
     /**
      * Get list of most infrequent words
+     *
      * @param n number of elements to return
-     * @return {@paramref n} most infrequent elements of index
+     * @return most infrequent elements of index
      */
-    public List<WordDetail> getTopInfrequentWords(int n){
+    public List<WordDetail> getTopInfrequentWords(int n) {
         List<WordDetail> list = new ArrayList<WordDetail>(index.values());
         Collections.sort(list, new SortByFrequency());
-        return list.subList(0,n);
+        return list.subList(0, n);
     }
 
     /**
      * Prints single index entry {@paramref wordDetail} to console
+     *
      * @param wordDetail single index entry
      */
     private void printIndexEntry(WordDetail wordDetail) {
@@ -114,14 +129,14 @@ public class IndexUtil {
         System.out.print("# Pages: ");
         for (int page : wordDetail.getPages()) {
             System.out.print(page + " ");
-
         }
+        System.out.println("\n");
     }
-
 
     /**
      * Format {@paramref text} by adding new line after every {@paramref lineLength} words
-     * @param text text to be formatted
+     *
+     * @param text       text to be formatted
      * @param lineLength expected line length in words
      * @return formatted text
      */

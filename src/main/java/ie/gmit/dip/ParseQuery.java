@@ -1,27 +1,38 @@
 package ie.gmit.dip;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
+/**
+ * Parse source file and build index
+ */
 public class ParseQuery {
-
 
 
     private Set<String> stop;
     private Map<String, WordDetail> dictionary;
     private Map<String, WordDetail> index = new TreeMap<>();
 
+    /**
+     * Constructor. Takes 2 arguments.
+     *
+     * @param stop       list of stop words - words to be ignored.
+     * @param dictionary map containing words and its definitions.
+     */
     public ParseQuery(Set<String> stop, Map<String, WordDetail> dictionary) {
         this.stop = stop;
         this.dictionary = dictionary;
     }
 
-    public void parse(String queryFileName) throws Exception {
+    /**
+     * Build index from file
+     *
+     * @param queryFileName name of file from which index should be build
+     * @throws IOException throws IOException exception
+     */
+    public void parse(String queryFileName) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(queryFileName)));
 
         String line = null;
@@ -50,6 +61,11 @@ public class ParseQuery {
         br.close();
     }
 
+    /**
+     * Gets index build from query
+     *
+     * @return index containing word with count, definition and type
+     */
     public Map<String, WordDetail> getIndex() {
         return index;
     }

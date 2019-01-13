@@ -1,81 +1,79 @@
 package ie.gmit.dip;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Use to build Dictionary.
+ */
 public class ParseDictionary {
 
-    private Map<String, WordDetail> dictionary = new TreeMap<>(); //O(log(n))
-    //private Map<String, WordDetail> dictionary = new HashMap<>(); //Average O(1)
-    //private Map<String, WordDetail> dictionary = new ConcurrentHashMap<>(); //Average O(1) //Threads
-    //private Map<String, WordDetail> dictionary = new ConcurrentSkipList<>(); //O(log(n))  //Threads
-
+    private Map<String, WordDetail> dictionary = new TreeMap<>();
     private WordDetail current = null;
     private StringBuilder builder = new StringBuilder();
 
-
-    public static void main(String[] args) throws Exception {
-        ParseDictionary parseDictionary = new ParseDictionary();
-        parseDictionary.parse("C:\\Users\\Damian\\Downloads\\advenced_oop_project\\dictionary.csv");
-        Map<String, WordDetail> dictionary = parseDictionary.getDictionary();
-
-    }
-    public void parse(String dictionaryFileName) throws Exception{
+    /**
+     * Parse source file and create dictionary
+     * @param dictionaryFileName Name of file with dictionary to be parsed.
+     * @throws IOException throws IOException exception
+     */
+    public void parse(String dictionaryFileName) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dictionaryFileName)));
-
         String line = null;
-
-        while ((line = br.readLine()) != null){
+        while ((line = br.readLine()) != null) {
             if (line.startsWith("\"")) current = new WordDetail();
             builder.append(line);
             if (line.endsWith("\"") && current != null) process();
         }
-
         br.close();
     }
 
-    private void process(){
-        //"word","wordtype","definition"
+    /**
+     * Create dictionary entry by initializing fields of WordDetail instance.
+     */
+    private void process() {
         StringBuilder temp = new StringBuilder();
-
         int state = 0;
-        for (int i = 0; i < builder.length(); i++){
+        for (int i = 0; i < builder.length(); i++) {
             char next = builder.charAt(i);
 
-            if (next == '\u0022'){ //Double-quotes
-                if (state == 1){
+            if (next == '\u0022') {
+                if (state == 1) {
                     current.setWord(temp.toString().toUpperCase());
                     temp.setLength(0);
-                }else if (state == 3){
+                } else if (state == 3) {
                     current.setWordType(temp.toString());
                     temp.setLength(0);
-                }else if (state == 4){
+                } else if (state == 4) {
                     current.setDefinition(builder.substring(i, builder.length()));
                     addWordDetail();
                     return;
                 }
                 state++;
-            }else{
+            } else {
                 temp.append(next);
             }
 
         }
     }
 
-    private void resetBuilder(){
-        //builder = StringBuilder(); //Resets the builder, but it's inefficient!
-        builder.setLength(0); //A bit of a hack, but much faster.
+    /**
+     * Set StringBuilder length to 0.
+     */
+    private void resetBuilder() {
+        builder.setLength(0);
     }
 
-    private void addWordDetail(){
+    /**
+     * Add entry to dictionary. Dictionary is a map which key is word and value is WordDetails instance, that contains word definition.
+     */
+    private void addWordDetail() {
         WordDetail entry = dictionary.get(current.getWord());
 
-        if (entry == null){
+        if (entry == null) {
             dictionary.put(current.getWord().toUpperCase(), current);
-        }else{
+        } else {
             entry.setDefinition(entry.getDefinition() + "\n" + current.getDefinition());
         }
 
@@ -83,7 +81,11 @@ public class ParseDictionary {
         resetBuilder();
     }
 
-    public Map<String, WordDetail> getDictionary(){
+    /**
+     * Get Dictionary parsed from file.
+     * @return dictionary containing words and its definitions.
+     */
+    public Map<String, WordDetail> getDictionary() {
         return dictionary;
     }
 

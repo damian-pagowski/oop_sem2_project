@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Pojo, used to store information about word: type, definition and pages where word were used.
+ */
 public class WordDetail {
 
     private String word;

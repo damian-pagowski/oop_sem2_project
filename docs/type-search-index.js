@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"ie.gmit.dip","l":"IndexUtil"},{"p":"ie.gmit.dip","l":"ParseDictionary"},{"p":"ie.gmit.dip","l":"ParseQuery"},{"p":"ie.gmit.dip","l":"ParseStopWords"},{"p":"ie.gmit.dip","l":"Runner"},{"p":"ie.gmit.dip","l":"SortByFrequency"},{"p":"ie.gmit.dip","l":"SortByName"},{"p":"ie.gmit.dip","l":"WordDetail"}]
