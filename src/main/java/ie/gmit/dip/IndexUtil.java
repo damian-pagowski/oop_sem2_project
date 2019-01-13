@@ -1,9 +1,14 @@
 package ie.gmit.dip;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class IndexUtil {
+
+    private Map<String, WordDetail> index;
+
+    public IndexUtil(Map<String, WordDetail> index) {
+        this.index = index;
+    }
 
     public static void main(String[] args) {
         String sampleDef = "\"To cast or drive out; to banish; to expel; to reject.\"\n" +
@@ -22,10 +27,80 @@ public class IndexUtil {
         wordDetail.setDefinition(sampleDef);
         wordDetail.setWordType(type);
         wordDetail.setPages(pages);
-        IndexUtil util = new IndexUtil();
-        util.printIndexEntry(wordDetail);
+//        IndexUtil util = new IndexUtil();
+//        util.printIndexEntry(wordDetail);
     }
 
+    public void printIndexSortedAsc() {
+// TODO implement
+    }
+
+    public void printIndexSortedDesc() {
+// TODO implement
+
+    }
+
+    public void printWordList(List<WordDetail> topInfrequentWords) {
+        // TODO implement
+
+    }
+
+
+    class SortByFrequency implements Comparator<WordDetail> {
+
+        @Override
+        public int compare(WordDetail o1, WordDetail o2) {
+            int s1 = o1.getPages().size();
+            int s2 = o2.getPages().size();
+            return s1 - s2;
+        }
+    }
+
+    class SortByName implements Comparator<WordDetail> {
+        @Override
+        public int compare(WordDetail o1, WordDetail o2) {
+            String name1 = o1.getWord();
+            String name2 = o2.getWord();
+            return name1.compareTo(name2);
+        }
+    }
+
+
+    /**
+     * Get total number of unique words in index.
+     * @return The total number of unique words.
+     */
+    public int getUniqueWordsCount(){
+        return index.size();
+    }
+
+    /**
+     * Get list of most frequent words
+     * @param n number of elements to return
+     * @return {@paramref n} most frequent elements of index
+     */
+    public List<WordDetail> getTopFrequentWords(int n){
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByFrequency());
+        Collections.reverse(list);
+        return list.subList(0,n);
+    }
+
+    /**
+     * Get list of most infrequent words
+     * @param n number of elements to return
+     * @return {@paramref n} most infrequent elements of index
+     */
+    public List<WordDetail> getTopInfrequentWords(int n){
+        List<WordDetail> list = new ArrayList<WordDetail>(index.values());
+        Collections.sort(list, new SortByFrequency());
+        return list.subList(0,n);
+    }
+
+    /**
+     * Prints single index entry {@paramref wordDetail} to console
+     * @param wordDetail single index entry
+     */
     private void printIndexEntry(WordDetail wordDetail) {
         String separator = "----------------------------------------";
         System.out.println(separator);
@@ -43,6 +118,13 @@ public class IndexUtil {
         }
     }
 
+
+    /**
+     * Format {@paramref text} by adding new line after every {@paramref lineLength} words
+     * @param text text to be formatted
+     * @param lineLength expected line length in words
+     * @return formatted text
+     */
     private String formatLine(String text, int lineLength) {
         final StringTokenizer split = new StringTokenizer(text);
         long count = 1;
